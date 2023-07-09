@@ -35,3 +35,23 @@ V = "4c" means that the cell will see the crosshairs from its neighbors.
 B - birth. In this parameter, you must specify a list with the values ​​of "live neighbors" at which a new cell may appear
 
 S - survival. In this parameter, you must specify a list with the values ​​of "living neighbors" at which the cell will continue to live
+
+## Hot keys
+
+"p" - pauses the game
+
+"с" - cleans the field of cells
+
+"r" - restarting the playing field
+
+"f" - fills the field with cells without changing the game settings
+
+"m" - max fps in game
+
+"\+" - increases fps by 2 units
+
+"\-" - reduces fps by 2 units
+
+## Mouse click
+
+You can click mouse and hover over the screen to spawn the cells

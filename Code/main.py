@@ -16,6 +16,9 @@ class Automaton:
         self.pixel = pixel_size
         self.fps = fps
         
+        self.barrier_percent = barrier_percent
+        self.random_fill = random_fill
+        
         if settings:
             if settings.get("V"):
                 if settings["V"] == "8":
@@ -52,10 +55,16 @@ class Automaton:
         
         self.next_cells = self.clear_cells()
         
-        if random_fill:
-            self.current_cells = self.random_spawn_cells(barrier_percent)
+        if self.random_fill:
+            self.current_cells = self.random_spawn_cells()
         else:
-            self.current_cells = self.spawn_rect_cells(barrier_percent)
+            self.current_cells = self.spawn_rect_cells()
+        
+    def reset(self):
+        if self.random_fill:
+            self.current_cells = self.random_spawn_cells()
+        else:
+            self.current_cells = self.spawn_rect_cells()
     
     def clear_cells(self) -> np.ndarray:
         return np.array(
@@ -63,9 +72,9 @@ class Automaton:
              for _ in range(self.height)]
         )
     
-    def random_spawn_cells(self, barrier_percent: int) -> np.ndarray:
-        barr_w = self.width * barrier_percent // 200
-        barr_h = self.height * barrier_percent // 200
+    def random_spawn_cells(self) -> np.ndarray:
+        barr_w = self.width * self.barrier_percent // 200
+        barr_h = self.height * self.barrier_percent // 200
         return np.array(
             [[randint(0, 1) if barr_w <= i <= self.width - barr_w and barr_h <= j <= self.height - barr_h
             else 0
@@ -73,9 +82,9 @@ class Automaton:
             for j in range(self.height)]
             )
     
-    def spawn_rect_cells(self, barrier_percent: int) -> np.ndarray:
-        barr_w = self.width * barrier_percent // 200
-        barr_h = self.height * barrier_percent // 200
+    def spawn_rect_cells(self) -> np.ndarray:
+        barr_w = self.width * self.barrier_percent // 200
+        barr_h = self.height * self.barrier_percent // 200
         return np.array(
             [[1 if barr_w <= i <= self.width - barr_w and barr_h <= j <= self.height - barr_h
             else 0
@@ -83,6 +92,23 @@ class Automaton:
             for j in range(self.height)]
             )
     
+    def spawn_cell(self, positions: tuple) -> None:
+        x = positions[0] // self.pixel
+        y = positions[1] // self.pixel
+        
+        if (0 >= x or x >= self.width - 1 or 0 >= y or y >= self.height - 1):
+            return
+        
+        self.current_cells[y][x] = 1
+        self.next_cells[y][x] = 1
+        pygame.draw.rect(self.surface, pygame.Color('darkgreen'),
+                          (x * self.pixel + 1, 
+                           y * self.pixel + 1, 
+                           self.pixel - 1, 
+                           self.pixel - 1))
+        
+        pygame.display.flip()
+            
     @staticmethod
     @njit(fastmath=True)
     def check_all_cells(current_cells: list, next_cells: list,
@@ -228,14 +254,43 @@ class Automaton:
 if __name__ == "__main__":
     automaton = Automaton(
         window_size=(1400, 700), 
-        pixel_size=5, 
-        fps=10,
-        random_fill=False,
+        pixel_size=20, 
+        fps=20,
+        random_fill=True,
         barrier_percent=10,
         )
     
+    pause = False
+    click = False
+    
     while True:
-        automaton.draw()
+        if not(pause):
+            automaton.draw()
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if (event.type == pygame.QUIT):
                 exit()
+            elif (event.type == pygame.KEYDOWN):
+                if (event.key == pygame.K_p):
+                    pause = not pause
+                elif (event.key == pygame.K_MINUS):
+                    automaton.fps -= 2
+                elif (event.key == pygame.K_EQUALS):
+                    automaton.fps += 2
+                elif (event.key == pygame.K_c):
+                    automaton.current_cells = automaton.clear_cells()
+                elif (event.key == pygame.K_r):
+                    automaton.reset()
+                elif (event.key == pygame.K_f):
+                    automaton.current_cells = automaton.spawn_rect_cells()
+                elif (event.key == pygame.K_m):
+                    automaton.fps = -1
+            
+            elif (event.type == pygame.MOUSEBUTTONDOWN):
+                click = True
+                automaton.spawn_cell(event.pos)
+            
+            elif (event.type == pygame.MOUSEBUTTONUP):
+                click = False
+            
+            elif (event.type == pygame.MOUSEMOTION and click):
+                automaton.spawn_cell(event.pos)
