@@ -8,6 +8,8 @@ numba==0.57.1
 
 numpy==1.24.4
 
+!You can view them in the file "requirements.txt"
+
  ## Start settings
 The \_\_name__ == "\_\_main__" block contains all the basic parameters for setting up the game.
 
