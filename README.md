@@ -1,5 +1,5 @@
-# PyGameOfLive
- Game of Live on Python 3.10
+# GameOfLife
+ Game of Life on Python 3.10
 
  ## Required Libraries
 pygame==2.5.0
