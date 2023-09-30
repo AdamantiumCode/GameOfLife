@@ -11,8 +11,8 @@ class Automaton:
                  window_size: tuple, pixel_size: int, fps: int,
                  random_fill: bool = True, barrier_percent: int = 0,
                  **settings) -> None:
-        pygame.init()
         
+        pygame.init()
         pygame.display.set_caption("Game of Life - AdamantiumCode")
         pygame.display.set_icon(pygame.Surface([30,30], pygame.SRCALPHA, 32))
 
