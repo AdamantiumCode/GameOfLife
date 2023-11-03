@@ -1,5 +1,5 @@
 # GameOfLife
- Game of Life on Python 3.10
+ Game of Life on Python
 
  ## Required Libraries
 pygame==2.5.0
@@ -9,6 +9,9 @@ numba==0.57.1
 numpy==1.24.4
 
 !You can view them in the file "requirements.txt"
+
+## Python Version
+My Game of Life works starting from Python version 3.10 and ending with Python version 3.11
 
  ## Start settings
 The \_\_name__ == "\_\_main__" block contains all the basic parameters for setting up the game.
