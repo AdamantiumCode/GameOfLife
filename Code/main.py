@@ -1,3 +1,4 @@
+import sys
 import pygame
 import numpy as np
 
@@ -271,7 +272,7 @@ if __name__ == "__main__":
             automaton.draw()
         for event in pygame.event.get():
             if (event.type == pygame.QUIT):
-                exit()
+                sys.exit()
             elif (event.type == pygame.KEYDOWN):
                 if (event.key == pygame.K_p):
                     pause = not pause
